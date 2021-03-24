@@ -1,22 +1,22 @@
 import { useParams } from "react-router-dom";
+import { useEffect, useState } from 'react';
 
-const LocationDetails = ({ blogs }) => {
-  const { id } = useParams();
-  const blog = blogs.find((blog) => {
-    return blog.id == id ? blog : null;
-  });
+const LocationDetails = () => {
+  const { slug } = useParams();
+  const [location, setLocation] = useState({});
+
+  useEffect(() => {
+    (async () => {
+      const locationData = await fetch(
+        `http://127.0.0.1:3333/location/${slug}`
+      ).then((response) => response.json());
+      console.log('made it to location details!', locationData)
+      setLocation(locationData);
+    })();
+  }, [setLocation, slug]);
+
   return (
-    <>
-      <h1>{blog.title}</h1>
-      <h5>{blog.date}</h5>
-      <p className="blog-body">{blog.body}</p>
-      <form data-testid="commentSection">
-        <label>
-          <textarea data-testid="commentInput" />
-        </label>
-        <button data-testid="submitCommentButton">Add Comment</button>
-      </form>
-    </>
+      <h1>{location.location}</h1>
   );
 };
 
